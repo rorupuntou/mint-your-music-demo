@@ -8,7 +8,6 @@ import { IDKitWidget } from "@worldcoin/idkit";
 import { MiniKit } from "@worldcoin/minikit-js";
 
 export default function Home() {
-  // ... (todos tus estados se mantienen igual)
   const [isConnected, setIsConnected] = useState(false);
   const [price, setPrice] = useState("0.01");
   const [artistPercentage, setArtistPercentage] = useState(80);
@@ -38,7 +37,6 @@ export default function Home() {
       }
     } catch (e) {
       console.error("Fallo al conectar la billetera:", e);
-      // --- BLOQUE CORREGIDO ---
       if (e instanceof Error) {
         setFeedback(`Error: ${e.message}`);
       } else {
@@ -57,15 +55,15 @@ export default function Home() {
         throw new Error("MiniKit no está disponible.");
 
       const priceInWei = ethers.parseEther(price);
-      const contractInterface = new ethers.Interface(contractABI);
-      const encodedData = contractInterface.encodeFunctionData("mint", [
-        artistPercentage,
-      ]);
 
+      // --- BLOQUE CORREGIDO ---
+      // Construimos la transacción en el formato "Parsed" que espera el SDK.
       const transaction = {
-        to: contractAddress,
-        value: ethers.toQuantity(priceInWei),
-        data: encodedData,
+        address: contractAddress, // La dirección del contrato
+        abi: contractABI, // El ABI del contrato
+        functionName: "mint", // El nombre de la función a llamar
+        args: [artistPercentage], // Un array con los argumentos de la función
+        value: ethers.toQuantity(priceInWei), // El valor en ETH a enviar
       };
 
       setFeedback("Por favor, confirma la transacción en tu billetera...");
@@ -88,7 +86,6 @@ export default function Home() {
       }
     } catch (error) {
       console.error("Error en la compra:", error);
-      // --- BLOQUE CORREGIDO ---
       if (error instanceof Error) {
         setFeedback(`Error: ${error.message}`);
       } else {
@@ -103,7 +100,6 @@ export default function Home() {
   };
 
   return (
-    // ... (Tu JSX se mantiene exactamente igual)
     <>
       <Head>
         <title>Mint your Music</title>
