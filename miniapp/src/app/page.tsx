@@ -56,14 +56,12 @@ export default function Home() {
 
       const priceInWei = ethers.parseEther(price);
 
-      // --- BLOQUE CORREGIDO ---
-      // Construimos la transacción en el formato "Parsed" que espera el SDK.
       const transaction = {
-        address: contractAddress, // La dirección del contrato
-        abi: contractABI, // El ABI del contrato
-        functionName: "mint", // El nombre de la función a llamar
-        args: [artistPercentage], // Un array con los argumentos de la función
-        value: ethers.toQuantity(priceInWei), // El valor en ETH a enviar
+        address: contractAddress,
+        abi: contractABI,
+        functionName: "mint",
+        args: [artistPercentage],
+        value: ethers.toQuantity(priceInWei),
       };
 
       setFeedback("Por favor, confirma la transacción en tu billetera...");
@@ -72,7 +70,9 @@ export default function Home() {
         transaction: [transaction],
       });
 
-      if (result.status === "success") {
+      // --- BLOQUE CORREGIDO ---
+      // Leemos el 'status' desde 'result.finalPayload'
+      if (result.finalPayload.status === "success") {
         setFeedback("¡Transacción enviada! Tu NFT se está acuñando...");
         setTimeout(() => {
           setFeedback("¡Compra exitosa! Ahora puedes verificar tu humanidad.");
@@ -80,8 +80,10 @@ export default function Home() {
           setIsLoading(false);
         }, 8000);
       } else {
+        // Leemos el mensaje de error desde 'result.finalPayload.error'
         throw new Error(
-          result.error?.message || "La transacción fue rechazada o falló."
+          result.finalPayload.error?.message ||
+            "La transacción fue rechazada o falló."
         );
       }
     } catch (error) {
