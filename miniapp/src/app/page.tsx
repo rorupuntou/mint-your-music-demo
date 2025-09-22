@@ -8,6 +8,7 @@ import { IDKitWidget } from "@worldcoin/idkit";
 import { MiniKit } from "@worldcoin/minikit-js";
 
 export default function Home() {
+  // ... (todos tus estados se mantienen igual)
   const [isConnected, setIsConnected] = useState(false);
   const [price, setPrice] = useState("0.01");
   const [artistPercentage, setArtistPercentage] = useState(80);
@@ -37,7 +38,12 @@ export default function Home() {
       }
     } catch (e) {
       console.error("Fallo al conectar la billetera:", e);
-      setFeedback(`Error: ${e.message}`);
+      // --- BLOQUE CORREGIDO ---
+      if (e instanceof Error) {
+        setFeedback(`Error: ${e.message}`);
+      } else {
+        setFeedback("Ocurrió un error desconocido al conectar.");
+      }
     }
   };
 
@@ -64,8 +70,6 @@ export default function Home() {
 
       setFeedback("Por favor, confirma la transacción en tu billetera...");
 
-      // --- LÍNEA CORREGIDA ---
-      // Se envía un array de transacciones, como espera el SDK.
       const result = await MiniKit.commandsAsync.sendTransaction({
         transaction: [transaction],
       });
@@ -84,7 +88,12 @@ export default function Home() {
       }
     } catch (error) {
       console.error("Error en la compra:", error);
-      setFeedback(`Error: ${error.message}`);
+      // --- BLOQUE CORREGIDO ---
+      if (error instanceof Error) {
+        setFeedback(`Error: ${error.message}`);
+      } else {
+        setFeedback("Ocurrió un error desconocido durante la compra.");
+      }
       setIsLoading(false);
     }
   };
@@ -94,6 +103,7 @@ export default function Home() {
   };
 
   return (
+    // ... (Tu JSX se mantiene exactamente igual)
     <>
       <Head>
         <title>Mint your Music</title>
