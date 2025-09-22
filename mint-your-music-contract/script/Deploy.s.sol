@@ -6,15 +6,17 @@ import "../src/MintYourMusicNFT.sol";
 
 contract DeployScript is Script {
     function run() external returns (MintYourMusicNFT) {
-        address payable artistWallet = payable(0x595f4A7c1342a821e27A7788B002C7F217895055);
-        address payable platformWallet = payable(0x8C21AEa4221975f48b8A05139885C13E1572037c);
+        // --- USA TU DIRECCIÓN DE METAMASK AQUÍ ---
+        // Esta es la billetera que recibirá los fondos de las ventas.
+        address payable myWallet = payable(0x536bB672A282df8c89DDA57E79423cC505750E52); 
 
         vm.startBroadcast();
 
-        MintYourMusicNFT nftContract = new MintYourMusicNFT(artistWallet, platformWallet, msg.sender);
+        // Usamos tu dirección para el artista y la plataforma
+        MintYourMusicNFT nftContract = new MintYourMusicNFT(myWallet, myWallet, msg.sender);
 
-        // Configura la URI de los metadatos del NFT
-        string memory metadataURI = "https://emerald-used-leopard-238.mypinata.cloud/ipfs/bafkreibgfbcgratqorpg245lgfqmnm43f4y553ng3qny6kxrkfg24lybzy"; // <-- REEMPLAZA ESTO
+        // Reemplaza esta URL con la que obtuviste de Pinata para tu archivo metadata.json
+        string memory metadataURI = "https://emerald-used-leopard-238.mypinata.cloud/ipfs/bafkreibgfbcgratqorpg245lgfqmnm43f4y553ng3qny6kxrkfg24lybzy"; 
         nftContract.setBaseURI(metadataURI);
 
         vm.stopBroadcast();
