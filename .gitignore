@@ -1,0 +1,27 @@
+# Ignorar archivos del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Archivos de entorno (contienen secretos)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+### Carpeta miniapp (Next.js) ###
+miniapp/.next/
+miniapp/node_modules/
+miniapp/out/
+
+### Carpeta mint-your-music-contract (Foundry) ###
+mint-your-music-contract/cache/
+mint-your-music-contract/out/
+mint-your-music-contract/broadcast/
+mint-your-music-contract/lib/ # Ignoramos las dependencias, se instalan con 'forge install'

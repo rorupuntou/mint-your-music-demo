@@ -1,0 +1,23 @@
+{
+  // --- Formateo Automático ---
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  // --- Configuración para Solidity ---
+  "[solidity]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  // Importante: Le dice a la extensión de Solidity dónde encontrar las librerías
+  // que Foundry instala, como OpenZeppelin.
+  "solidity.remappings": [
+    "ds-test/=lib/forge-std/lib/ds-test/src/",
+    "forge-std/=lib/forge-std/src/",
+    "openzeppelin-contracts/=lib/openzeppelin-contracts/contracts/"
+  ],
+
+  // --- Configuración para ESLint ---
+  "eslint.workingDirectories": [
+    "./miniapp"
+  ]
+}
