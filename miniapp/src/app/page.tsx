@@ -70,8 +70,6 @@ export default function Home() {
         transaction: [transaction],
       });
 
-      // --- BLOQUE CORREGIDO ---
-      // Leemos el 'status' desde 'result.finalPayload'
       if (result.finalPayload.status === "success") {
         setFeedback("¡Transacción enviada! Tu NFT se está acuñando...");
         setTimeout(() => {
@@ -80,9 +78,11 @@ export default function Home() {
           setIsLoading(false);
         }, 8000);
       } else {
-        // Leemos el mensaje de error desde 'result.finalPayload.error'
+        // --- LÍNEA CORREGIDA ---
+        // Accedemos al mensaje de error directamente desde finalPayload
+        // Hacemos un cast a 'any' para evitar problemas de tipeo con diferentes versiones del SDK
         throw new Error(
-          result.finalPayload.error?.message ||
+          (result.finalPayload as any).message ||
             "La transacción fue rechazada o falló."
         );
       }
