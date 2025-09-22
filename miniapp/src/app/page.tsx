@@ -7,6 +7,11 @@ import Head from "next/head";
 import { IDKitWidget } from "@worldcoin/idkit";
 import { MiniKit } from "@worldcoin/minikit-js";
 
+// Helper type to make error handling safer
+type MiniKitError = {
+  message?: string;
+};
+
 export default function Home() {
   const [isConnected, setIsConnected] = useState(false);
   const [price, setPrice] = useState("0.01");
@@ -78,12 +83,11 @@ export default function Home() {
           setIsLoading(false);
         }, 8000);
       } else {
-        // --- LÍNEA CORREGIDA ---
-        // Accedemos al mensaje de error directamente desde finalPayload
-        // Hacemos un cast a 'any' para evitar problemas de tipeo con diferentes versiones del SDK
+        // --- BLOQUE CORREGIDO Y FINAL ---
+        // Leemos el mensaje de error de forma segura para TypeScript y ESLint
+        const errorPayload = result.finalPayload as MiniKitError;
         throw new Error(
-          (result.finalPayload as any).message ||
-            "La transacción fue rechazada o falló."
+          errorPayload.message || "La transacción fue rechazada o falló."
         );
       }
     } catch (error) {
