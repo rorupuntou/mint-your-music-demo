@@ -17,7 +17,6 @@ export const translations = {
     // Purchase View
     album_title: "Genesis Album",
     artist_name: "by Rodrigo",
-    verified_collector: "Verified Collector ⭐",
     price_label: "Your Price (in ETH)",
     split_label: "Split:",
     artist: "Artist",
@@ -31,12 +30,9 @@ export const translations = {
     verification_success: "Verification successful! You can now purchase.",
     purchase_feedback: "Transaction sent! Your NFT is being minted...",
     purchase_complete: "Purchase successful! Thank you for your support.",
-
-    // Error Messages
     error_connect: "Failed to connect wallet.",
     error_verify: "Verification failed.",
     error_purchase: "Purchase failed.",
-    error_unknown: "An unknown error occurred.",
   },
   es: {
     // Connect View
@@ -55,7 +51,6 @@ export const translations = {
     // Purchase View
     album_title: "Álbum Génesis",
     artist_name: "por Rodrigo",
-    verified_collector: "Coleccionista Verificado ⭐",
     price_label: "Tu Precio (en ETH)",
     split_label: "Reparto:",
     artist: "Artista",
@@ -70,11 +65,8 @@ export const translations = {
     verification_success: "¡Verificación exitosa! Ya puedes comprar.",
     purchase_feedback: "¡Transacción enviada! Tu NFT se está acuñando...",
     purchase_complete: "¡Compra exitosa! Gracias por tu apoyo.",
-
-    // Error Messages
     error_connect: "Fallo al conectar la billetera.",
     error_verify: "La verificación falló.",
     error_purchase: "La compra falló.",
-    error_unknown: "Ocurrió un error desconocido.",
   },
 };
