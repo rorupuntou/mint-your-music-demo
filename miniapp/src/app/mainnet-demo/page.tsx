@@ -5,7 +5,7 @@ import { ethers } from "ethers";
 import { contractAddress, contractABI } from "../../../lib/contract_mainnet";
 import Head from "next/head";
 import { MiniKit, VerificationLevel } from "@worldcoin/minikit-js";
-import { translations } from "../../../lib/translations"; // <-- Importar traducciones
+import { translations } from "../../../lib/translations"; // Import translations
 
 type MiniKitError = { message?: string };
 
@@ -24,7 +24,7 @@ export default function Home() {
 
     useEffect(() => { MiniKit.install(); }, []);
 
-    // --- Core Logic Functions (sin cambios en la lógica) ---
+    // --- Core Logic Functions (Your working code) ---
     const handleConnect = async () => {
         setIsLoading(true);
         setFeedback(t.connecting);
@@ -153,7 +153,7 @@ export default function Home() {
                                     </div>
                                     <div>
                                         <label htmlFor="percentage" className="block text-sm font-medium text-gray-300 mb-1">{t.split_label} {artistPercentage}% {t.artist} / {100 - artistPercentage}% {t.platform}</label>
-                                        <input type="range" id="percentage" min="1" max="100" value={artistPercentage} onChange={(e) => setArtistPercentage(Number(e.target.value))} className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer" />
+                                        <input type="range" id="percentage" min="1" max="100" value={artistPercentage} onChange={(e) => setArtistPercentage(Number(e.character.value))} className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer" />
                                     </div>
                                     <button onClick={handlePurchase} disabled={isLoading} className="w-full py-3 mt-4 font-bold text-white uppercase tracking-wider bg-blue-600 rounded-lg hover:bg-blue-700 transition-transform transform active:scale-95 disabled:bg-gray-600">
                                         {isLoading ? t.purchasing : t.purchase_button}
