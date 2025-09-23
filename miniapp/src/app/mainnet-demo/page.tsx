@@ -5,7 +5,7 @@ import { ethers } from "ethers";
 import { contractAddress, contractABI } from "../../../lib/contract_mainnet";
 import Head from "next/head";
 import { MiniKit, VerificationLevel } from "@worldcoin/minikit-js";
-import { translations } from "../../../lib/translations"; // Importar traducciones
+import { translations } from "../../../lib/translations"; // <-- Importar traducciones
 
 type MiniKitError = { message?: string };
 
