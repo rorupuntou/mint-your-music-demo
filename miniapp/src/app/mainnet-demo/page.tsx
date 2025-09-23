@@ -2,14 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { ethers } from "ethers";
-// --- PATH CORREGIDO ---
-// Ruta correcta desde src/app/mainnet-demo/
 import { contractAddress, contractABI } from "../../../lib/contract_mainnet";
 import Head from "next/head";
 import { IDKitWidget } from "@worldcoin/idkit";
 import { MiniKit } from "@worldcoin/minikit-js";
 
-// ABI estándar para un token ERC20 y dirección del token WLD en Mainnet
 const erc20ABI = [
   "function approve(address spender, uint256 amount) returns (bool)",
 ];
@@ -20,7 +17,7 @@ type MiniKitError = { message?: string };
 export default function Home() {
   const [isConnected, setIsConnected] = useState(false);
   const [isApproved, setIsApproved] = useState(false);
-  const [price, setPrice] = useState("0.1"); // Precio en WLD
+  const [price, setPrice] = useState("0.1");
   const [artistPercentage, setArtistPercentage] = useState(80);
   const [feedback, setFeedback] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -34,32 +31,28 @@ export default function Home() {
   const handleConnect = async () => {
     try {
       if (!MiniKit.isInstalled())
-        throw new Error("Asegúrate de estar en World App.");
+        throw new Error("Please ensure you are in World App.");
       const { finalPayload } = await MiniKit.commandsAsync.walletAuth({
         nonce: "a1b2c3d4",
       });
       if (finalPayload.status === "success") {
         setIsConnected(true);
-        setFeedback(
-          `Billetera conectada: ${finalPayload.address.slice(0, 6)}...`
-        );
+        setFeedback(`Wallet connected: ${finalPayload.address.slice(0, 6)}...`);
       } else {
-        throw new Error("El usuario rechazó la conexión.");
+        throw new Error("User rejected the connection.");
       }
     } catch (e) {
-      console.error("Fallo al conectar la billetera:", e);
+      console.error("Failed to connect wallet:", e);
       if (e instanceof Error) setFeedback(`Error: ${e.message}`);
-      else setFeedback("Ocurrió un error desconocido al conectar.");
+      else setFeedback("An unknown error occurred while connecting.");
     }
   };
 
   const handleApprove = async () => {
     setIsLoading(true);
-    setFeedback(`Pidiendo aprobación para gastar ${price} WLD...`);
+    setFeedback(`Requesting approval to spend ${price} WLD...`);
     try {
-      if (!MiniKit.isInstalled())
-        throw new Error("MiniKit no está disponible.");
-
+      if (!MiniKit.isInstalled()) throw new Error("MiniKit is not available.");
       const priceInWei = ethers.parseUnits(price, 18);
       const transaction = {
         address: WLD_TOKEN_ADDRESS,
@@ -67,66 +60,60 @@ export default function Home() {
         functionName: "approve",
         args: [contractAddress, priceInWei],
       };
-
       const result = await MiniKit.commandsAsync.sendTransaction({
         transaction: [transaction],
       });
-
       if (result.finalPayload.status === "success") {
-        setFeedback("Aprobación enviada, esperando confirmación...");
+        setFeedback("Approval sent, awaiting confirmation...");
         setTimeout(() => {
           setIsApproved(true);
-          setFeedback("¡Aprobación exitosa! Ya puedes comprar el NFT.");
+          setFeedback("Approval successful! You can now purchase the NFT.");
           setIsLoading(false);
         }, 8000);
       } else {
         const errorPayload = result.finalPayload as MiniKitError;
-        throw new Error(errorPayload.message || "La aprobación fue rechazada.");
+        throw new Error(errorPayload.message || "Approval was rejected.");
       }
     } catch (error) {
-      console.error("Error en la aprobación:", error);
+      console.error("Error during approval:", error);
       if (error instanceof Error) setFeedback(`Error: ${error.message}`);
-      else setFeedback("Ocurrió un error desconocido durante la aprobación.");
+      else setFeedback("An unknown error occurred during approval.");
       setIsLoading(false);
     }
   };
 
   const handlePurchase = async () => {
     setIsLoading(true);
-    setFeedback("Preparando la transacción de compra...");
+    setFeedback("Preparing purchase transaction...");
     try {
-      if (!MiniKit.isInstalled())
-        throw new Error("MiniKit no está disponible.");
+      if (!MiniKit.isInstalled()) throw new Error("MiniKit is not available.");
       const priceInWei = ethers.parseUnits(price, 18);
-
       const transaction = {
         address: contractAddress,
         abi: contractABI,
         functionName: "mint",
         args: [priceInWei, artistPercentage],
       };
-
       const result = await MiniKit.commandsAsync.sendTransaction({
         transaction: [transaction],
       });
-
       if (result.finalPayload.status === "success") {
-        setFeedback("¡Transacción enviada! Tu NFT se está acuñando...");
+        setFeedback("Transaction sent! Your NFT is being minted...");
         setTimeout(() => {
-          setFeedback("¡Compra exitosa! Ahora puedes verificar tu humanidad.");
+          setFeedback("Purchase successful! You can now verify your humanity.");
           setPurchaseSuccess(true);
           setIsLoading(false);
         }, 8000);
       } else {
         const errorPayload = result.finalPayload as MiniKitError;
         throw new Error(
-          errorPayload.message || "La transacción fue rechazada."
+          errorPayload.message || "The transaction was rejected."
         );
       }
     } catch (error) {
-      console.error("Error en la compra:", error);
+      console.error("Error during purchase:", error);
       if (error instanceof Error) setFeedback(`Error: ${error.message}`);
-      else setFeedback("Ocurrió un error desconocido durante la compra.");
+      else setFeedback("An unknown error occurred during purchase.");
       setIsLoading(false);
     }
   };
@@ -144,17 +131,15 @@ export default function Home() {
         <div className="w-full max-w-sm p-6 bg-gray-800 rounded-lg shadow-lg">
           {!isConnected ? (
             <div className="text-center">
-              <h1 className="text-2xl font-bold">
-                Bienvenido a Mint your Music
-              </h1>
+              <h1 className="text-2xl font-bold">Welcome to Mint your Music</h1>
               <p className="mt-2 text-gray-400">
-                Conecta tu billetera para empezar.
+                Connect your wallet to get started.
               </p>
               <button
                 onClick={handleConnect}
                 className="w-full px-4 py-3 mt-8 font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700"
               >
-                Conectar Billetera de World App
+                Connect World App Wallet
               </button>
             </div>
           ) : (
@@ -166,7 +151,7 @@ export default function Home() {
               />
               {isVerified ? (
                 <p className="mt-4 text-lg font-bold text-center text-green-400">
-                  Coleccionista Verificado ⭐
+                  Verified Collector ⭐
                 </p>
               ) : (
                 <h1 className="mt-4 text-2xl font-bold text-center">
@@ -185,7 +170,7 @@ export default function Home() {
                   htmlFor="price"
                   className="block text-sm font-medium text-gray-300"
                 >
-                  Tu Precio (en WLD)
+                  Your Price (in WLD)
                 </label>
                 <input
                   type="number"
@@ -202,8 +187,8 @@ export default function Home() {
                   htmlFor="percentage"
                   className="block text-sm font-medium text-gray-300"
                 >
-                  Reparto: {artistPercentage}% Artista /{" "}
-                  {100 - artistPercentage}% Plataforma
+                  Split: {artistPercentage}% Artist / {100 - artistPercentage}%
+                  Platform
                 </label>
                 <input
                   type="range"
@@ -215,7 +200,6 @@ export default function Home() {
                   className="w-full h-2 mt-1 bg-gray-700 rounded-lg appearance-none cursor-pointer"
                 />
               </div>
-
               {!purchaseSuccess ? (
                 !isApproved ? (
                   <button
@@ -223,7 +207,7 @@ export default function Home() {
                     disabled={isLoading}
                     className="w-full px-4 py-3 mt-8 font-bold text-white bg-green-600 rounded-md hover:bg-green-700 disabled:bg-gray-500"
                   >
-                    {isLoading ? "Aprobando..." : `1. Aprobar ${price} WLD`}
+                    {isLoading ? "Approving..." : `1. Approve ${price} WLD`}
                   </button>
                 ) : (
                   <button
@@ -231,7 +215,7 @@ export default function Home() {
                     disabled={isLoading}
                     className="w-full px-4 py-3 mt-8 font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:bg-gray-500"
                   >
-                    {isLoading ? "Comprando..." : "2. Comprar como NFT"}
+                    {isLoading ? "Purchasing..." : "2. Purchase NFT"}
                   </button>
                 )
               ) : (
@@ -246,7 +230,7 @@ export default function Home() {
                         onClick={open}
                         className="w-full px-4 py-3 mt-8 font-bold text-white bg-purple-600 rounded-md hover:bg-purple-700"
                       >
-                        Verificar con World ID
+                        Verify with World ID
                       </button>
                     )}
                   </IDKitWidget>
