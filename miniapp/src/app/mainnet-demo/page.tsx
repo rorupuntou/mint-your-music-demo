@@ -69,13 +69,13 @@ export default function Home() {
           }),
         });
 
-        if (res.ok) {
+        const data = await res.json();
+        if (res.ok && data.success) {
           setIsHuman(true);
           setFeedback("¡Verificación exitosa! Ya puedes comprar.");
         } else {
-          const errorData = await res.json();
           throw new Error(
-            errorData.detail || "La verificación falló en el backend."
+            data.detail || "La verificación falló en el backend."
           );
         }
       } else {
