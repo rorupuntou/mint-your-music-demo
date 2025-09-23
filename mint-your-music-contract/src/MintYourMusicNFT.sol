@@ -3,13 +3,11 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol"; // Import ERC20 interface
 
 contract MintYourMusicNFT is ERC721, Ownable {
     uint256 private _nextTokenId;
-    address public immutable artistWallet;
-    address public immutable platformWallet;
-    IERC20 public immutable wldToken; // WLD token contract
+    address payable public immutable artistWallet;
+    address payable public immutable platformWallet;
     string public baseURI;
 
     event NFTMinted(
@@ -21,35 +19,28 @@ contract MintYourMusicNFT is ERC721, Ownable {
     );
 
     constructor(
-        address _artistWallet,
-        address _platformWallet,
-        address _wldTokenAddress, // WLD token address on Mainnet
+        address payable _artistWallet,
+        address payable _platformWallet,
         address _initialOwner
     ) ERC721("Mint Your Music: Genesis", "MYMG") Ownable(_initialOwner) {
         artistWallet = _artistWallet;
         platformWallet = _platformWallet;
-        wldToken = IERC20(_wldTokenAddress);
     }
 
-    // Updated mint function to accept WLD
-    function mint(uint256 _price, uint8 _artistPercentage) public {
-        require(_price > 0, "Price must be greater than zero");
-        require(_artistPercentage <= 100, "Percentage cannot exceed 100");
+    function mint(uint8 _artistPercentage) public payable {
+        require(msg.value > 0, "El pago debe ser mayor que cero");
+        require(_artistPercentage <= 100, "El porcentaje no puede exceder 100");
 
-        // 1. Transfer WLD from the user to this contract
-        wldToken.transferFrom(msg.sender, address(this), _price);
+        uint256 artistShare = (msg.value * _artistPercentage) / 100;
+        uint256 platformShare = msg.value - artistShare;
 
-        // 2. Calculate profit sharing
-        uint256 artistShare = (_price * _artistPercentage) / 100;
-        uint256 platformShare = _price - artistShare;
-
-        // 3. Distribute the WLD tokens
-        wldToken.transfer(artistWallet, artistShare);
+        (bool successArtist, ) = artistWallet.call{value: artistShare}("");
+        require(successArtist, "Fallo al transferir al artista");
         if (platformShare > 0) {
-            wldToken.transfer(platformWallet, platformShare);
+            (bool successPlatform, ) = platformWallet.call{value: platformShare}("");
+            require(successPlatform, "Fallo al transferir a la plataforma");
         }
 
-        // 4. Mint the NFT
         uint256 newTokenId = _nextTokenId;
         _nextTokenId++;
         _safeMint(msg.sender, newTokenId);
@@ -57,7 +48,7 @@ contract MintYourMusicNFT is ERC721, Ownable {
         emit NFTMinted(
             newTokenId,
             msg.sender,
-            _price,
+            msg.value,
             artistShare,
             platformShare
         );
