@@ -5,7 +5,7 @@ import { ethers } from "ethers";
 import { contractAddress, contractABI } from "../../../lib/contract_mainnet";
 import Head from "next/head";
 import { MiniKit, VerificationLevel } from "@worldcoin/minikit-js";
-import { translations } from "../../../lib/translations"; // Import translations
+import { translations } from "../../../lib/translations"; // Importar traducciones
 
 type MiniKitError = { message?: string };
 
@@ -24,7 +24,7 @@ export default function Home() {
 
     useEffect(() => { MiniKit.install(); }, []);
 
-    // --- Core Logic Functions (Identical to your working version) ---
+    // --- Core Logic Functions (sin cambios en la lógica) ---
     const handleConnect = async () => {
         setIsLoading(true);
         setFeedback(t.connecting);
@@ -115,7 +115,7 @@ export default function Home() {
             <main className="flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 bg-black text-white font-sans">
                 <div className="absolute top-4 right-4 z-10">
                     <button onClick={() => setLang(lang === 'en' ? 'es' : 'en')} className="px-3 py-1 text-sm text-gray-400 bg-gray-800 rounded-full hover:bg-gray-700 transition-colors">
-                        {lang === 'en' ? 'Español' : 'English'}
+                        {t.lang_switcher}
                     </button>
                 </div>
                 <div className="w-full max-w-sm p-6 bg-gray-900 rounded-2xl shadow-lg border border-gray-700 space-y-6">
