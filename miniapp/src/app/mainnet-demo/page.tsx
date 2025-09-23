@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { ethers } from "ethers";
-import { contractAddress, contractABI } from "../../../lib/contract_mainnet"; // <-- Apunta a la config de mainnet
+import { contractAddress, contractABI } from "../../../lib/contract_mainnet";
 import Head from "next/head";
 import { IDKitWidget } from "@worldcoin/idkit";
 import { MiniKit } from "@worldcoin/minikit-js";
@@ -11,16 +11,16 @@ import { MiniKit } from "@worldcoin/minikit-js";
 const erc20ABI = [
   "function approve(address spender, uint256 amount) returns (bool)",
 ];
-const WLD_TOKEN_ADDRESS = "0x2cfc85d8e48f8eab294be644d9e25c3030863003";
+const WLD_TOKEN_ADDRESS = "0x2cFc85d8E48F8EAB294be644d9E25C3030863003";
+
+type MiniKitError = { message?: string };
 
 export default function Home() {
   const [isConnected, setIsConnected] = useState(false);
   const [isApproved, setIsApproved] = useState(false);
-  const [price, setPrice] = useState("0.1"); // Precio inicial en WLD
+  const [price, setPrice] = useState("0.1"); // Precio en WLD
   const [artistPercentage, setArtistPercentage] = useState(80);
-  const [feedback, setFeedback] = useState(
-    "Conecta tu billetera para empezar."
-  );
+  const [feedback, setFeedback] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [purchaseSuccess, setPurchaseSuccess] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
@@ -45,7 +45,9 @@ export default function Home() {
         throw new Error("El usuario rechazó la conexión.");
       }
     } catch (e) {
-      // ... (manejo de errores)
+      console.error("Fallo al conectar la billetera:", e);
+      if (e instanceof Error) setFeedback(`Error: ${e.message}`);
+      else setFeedback("Ocurrió un error desconocido al conectar.");
     }
   };
 
@@ -56,7 +58,7 @@ export default function Home() {
       if (!MiniKit.isInstalled())
         throw new Error("MiniKit no está disponible.");
 
-      const priceInWei = ethers.parseUnits(price, 18); // WLD usa 18 decimales
+      const priceInWei = ethers.parseUnits(price, 18);
       const transaction = {
         address: WLD_TOKEN_ADDRESS,
         abi: erc20ABI,
@@ -70,19 +72,20 @@ export default function Home() {
 
       if (result.finalPayload.status === "success") {
         setFeedback("Aprobación enviada, esperando confirmación...");
-        // Aquí deberíamos esperar el hash, pero para la demo asumimos éxito
         setTimeout(() => {
           setIsApproved(true);
           setFeedback("¡Aprobación exitosa! Ya puedes comprar el NFT.");
           setIsLoading(false);
         }, 8000);
       } else {
-        throw new Error(
-          (result.finalPayload as any).message || "La aprobación fue rechazada."
-        );
+        const errorPayload = result.finalPayload as MiniKitError;
+        throw new Error(errorPayload.message || "La aprobación fue rechazada.");
       }
     } catch (error) {
-      // ... (manejo de errores)
+      console.error("Error en la aprobación:", error);
+      if (error instanceof Error) setFeedback(`Error: ${error.message}`);
+      else setFeedback("Ocurrió un error desconocido durante la aprobación.");
+      setIsLoading(false);
     }
   };
 
@@ -106,19 +109,154 @@ export default function Home() {
       });
 
       if (result.finalPayload.status === "success") {
-        // ... (lógica de éxito)
+        setFeedback("¡Transacción enviada! Tu NFT se está acuñando...");
+        setTimeout(() => {
+          setFeedback("¡Compra exitosa! Ahora puedes verificar tu humanidad.");
+          setPurchaseSuccess(true);
+          setIsLoading(false);
+        }, 8000);
       } else {
+        const errorPayload = result.finalPayload as MiniKitError;
         throw new Error(
-          (result.finalPayload as any).message ||
-            "La transacción fue rechazada."
+          errorPayload.message || "La transacción fue rechazada."
         );
       }
     } catch (error) {
-      // ... (manejo de errores)
+      console.error("Error en la compra:", error);
+      if (error instanceof Error) setFeedback(`Error: ${error.message}`);
+      else setFeedback("Ocurrió un error desconocido durante la compra.");
+      setIsLoading(false);
     }
   };
 
-  // ... (El resto de tu JSX y funciones auxiliares)
-  // Asegúrate de adaptar tu JSX para mostrar el botón de "Aprobar" primero,
-  // y luego el de "Comprar como NFT" cuando isApproved sea true.
+  const handleVerifySuccess = () => {
+    setIsVerified(true);
+  };
+
+  return (
+    <>
+      <Head>
+        <title>Mint your Music (Mainnet)</title>
+      </Head>
+      <main className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-900 text-white">
+        <div className="w-full max-w-sm p-6 bg-gray-800 rounded-lg shadow-lg">
+          {!isConnected ? (
+            <div className="text-center">
+              <h1 className="text-2xl font-bold">
+                Bienvenido a Mint your Music
+              </h1>
+              <p className="mt-2 text-gray-400">
+                Conecta tu billetera para empezar.
+              </p>
+              <button
+                onClick={handleConnect}
+                className="w-full px-4 py-3 mt-8 font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700"
+              >
+                Conectar Billetera de World App
+              </button>
+            </div>
+          ) : (
+            <>
+              <img
+                src="https://emerald-used-leopard-238.mypinata.cloud/ipfs/bafybeigsisfzfe2uhf4w66u5x7s4fihksl42qwkdi4nveiyl2jlokvrghe"
+                alt="Album Art"
+                className="w-full h-auto rounded-md shadow-md"
+              />
+              {isVerified ? (
+                <p className="mt-4 text-lg font-bold text-center text-green-400">
+                  Coleccionista Verificado ⭐
+                </p>
+              ) : (
+                <h1 className="mt-4 text-2xl font-bold text-center">
+                  Genesis Album
+                </h1>
+              )}
+              <p className="text-center text-gray-400">by Rodrigo</p>
+              <audio controls className="w-full mt-4">
+                <source
+                  src="https://emerald-used-leopard-238.mypinata.cloud/ipfs/bafybeigtm3cwlhwccorzwy6o4kmh6bilhbmutkjtrybqiak3l3yrx5fspu"
+                  type="audio/mpeg"
+                />
+              </audio>
+              <div className="mt-6">
+                <label
+                  htmlFor="price"
+                  className="block text-sm font-medium text-gray-300"
+                >
+                  Tu Precio (en WLD)
+                </label>
+                <input
+                  type="number"
+                  id="price"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  className="w-full px-3 py-2 mt-1 text-white bg-gray-700 border border-gray-600 rounded-md"
+                  step="0.1"
+                  min="0.1"
+                />
+              </div>
+              <div className="mt-4">
+                <label
+                  htmlFor="percentage"
+                  className="block text-sm font-medium text-gray-300"
+                >
+                  Reparto: {artistPercentage}% Artista /{" "}
+                  {100 - artistPercentage}% Plataforma
+                </label>
+                <input
+                  type="range"
+                  id="percentage"
+                  min="1"
+                  max="100"
+                  value={artistPercentage}
+                  onChange={(e) => setArtistPercentage(Number(e.target.value))}
+                  className="w-full h-2 mt-1 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+                />
+              </div>
+
+              {!purchaseSuccess ? (
+                !isApproved ? (
+                  <button
+                    onClick={handleApprove}
+                    disabled={isLoading}
+                    className="w-full px-4 py-3 mt-8 font-bold text-white bg-green-600 rounded-md hover:bg-green-700 disabled:bg-gray-500"
+                  >
+                    {isLoading ? "Aprobando..." : `1. Aprobar ${price} WLD`}
+                  </button>
+                ) : (
+                  <button
+                    onClick={handlePurchase}
+                    disabled={isLoading}
+                    className="w-full px-4 py-3 mt-8 font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:bg-gray-500"
+                  >
+                    {isLoading ? "Comprando..." : "2. Comprar como NFT"}
+                  </button>
+                )
+              ) : (
+                !isVerified && (
+                  <IDKitWidget
+                    app_id="app_14182c5ae3df538b79f98ba0abb8dc8e"
+                    action="verify-purchase"
+                    onSuccess={handleVerifySuccess}
+                  >
+                    {({ open }) => (
+                      <button
+                        onClick={open}
+                        className="w-full px-4 py-3 mt-8 font-bold text-white bg-purple-600 rounded-md hover:bg-purple-700"
+                      >
+                        Verificar con World ID
+                      </button>
+                    )}
+                  </IDKitWidget>
+                )
+              )}
+            </>
+          )}
+          {feedback && (
+            <p className="mt-4 text-sm text-center text-gray-400">{feedback}</p>
+          )}
+        </div>
+      </main>
+    </>
+  );
 }
