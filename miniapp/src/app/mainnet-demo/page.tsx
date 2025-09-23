@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { ethers } from "ethers";
-import { contractAddress, contractABI } from "../../lib/contract_mainnet";
+// --- PATH CORREGIDO ---
+// Ruta correcta desde src/app/mainnet-demo/
+import { contractAddress, contractABI } from "../../../lib/contract_mainnet";
 import Head from "next/head";
 import { IDKitWidget } from "@worldcoin/idkit";
 import { MiniKit } from "@worldcoin/minikit-js";
