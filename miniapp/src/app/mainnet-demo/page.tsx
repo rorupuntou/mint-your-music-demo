@@ -153,7 +153,7 @@ export default function Home() {
               <button
                 onClick={handleConnect}
                 disabled={isLoading}
-                className="w-full py-3 mt-4 font-bold text-white uppercase tracking-wider bg-blue-600 rounded-lg hover:bg-blue-700 transition-transform transform active:scale-95 disabled:bg-gray-600 disabled:cursor-not-allowed"
+                className="w-full py-3 mt-4 font-bold text-white uppercase tracking-wider bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500 rounded-lg shadow-lg border-2 border-yellow-400 hover:from-yellow-500 hover:via-red-600 hover:to-pink-600 transition-all transform active:scale-95 disabled:bg-gray-600 disabled:cursor-not-allowed"
               >
                 {isLoading ? t.connecting : t.connect_wallet_button}
               </button>
@@ -165,7 +165,7 @@ export default function Home() {
               <button
                 onClick={handleVerify}
                 disabled={isLoading}
-                className="w-full py-3 mt-4 font-bold text-white uppercase tracking-wider bg-purple-600 rounded-lg hover:bg-purple-700 transition-transform transform active:scale-95 disabled:bg-gray-600"
+                className="w-full py-3 mt-4 font-bold text-white uppercase tracking-wider bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 rounded-lg shadow-lg border-2 border-green-400 hover:from-green-500 hover:via-blue-600 hover:to-purple-600 transition-all transform active:scale-95 disabled:bg-gray-600"
               >
                 {isLoading ? t.verifying : t.verify_button}
               </button>
@@ -231,7 +231,7 @@ export default function Home() {
                   <button
                     onClick={handlePurchase}
                     disabled={isLoading}
-                    className="w-full py-3 mt-4 font-bold text-white uppercase tracking-wider bg-blue-600 rounded-lg hover:bg-blue-700 transition-transform transform active:scale-95 disabled:bg-gray-600"
+                    className="w-full py-3 mt-4 font-bold text-white uppercase tracking-wider bg-gradient-to-r from-orange-400 via-pink-500 to-red-500 rounded-lg shadow-lg border-2 border-orange-400 hover:from-orange-500 hover:via-pink-600 hover:to-red-600 transition-all transform active:scale-95 disabled:bg-gray-600"
                   >
                     {isLoading ? t.purchasing : t.purchase_button}
                   </button>
