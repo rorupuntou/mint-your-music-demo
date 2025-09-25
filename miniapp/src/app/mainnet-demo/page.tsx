@@ -5,13 +5,15 @@ import { ethers } from "ethers";
 import { contractAddress, contractABI } from "../../../lib/contract_mainnet";
 import Head from "next/head";
 import { MiniKit, VerificationLevel } from "@worldcoin/minikit-js";
-import { translations } from "../../../lib/translations";
+import { translations } from "../../../lib/translations"; // Import translations
 
 type MiniKitError = { message?: string };
 
 export default function Home() {
+    // --- State Management ---
     const [lang, setLang] = useState<'en' | 'es'>('en');
     const t = translations[lang];
+
     const [isConnected, setIsConnected] = useState(false);
     const [isHuman, setIsHuman] = useState(false);
     const [price, setPrice] = useState("0.001");
@@ -22,6 +24,7 @@ export default function Home() {
 
     useEffect(() => { MiniKit.install(); }, []);
 
+    // --- Core Logic Functions (Your working code) ---
     const handleConnect = async () => {
         setIsLoading(true);
         setFeedback(t.connecting);
@@ -105,6 +108,7 @@ export default function Home() {
         }
     };
 
+    // --- UI Rendering ---
     return (
         <>
             <Head><title>Mint your Music</title></Head>
