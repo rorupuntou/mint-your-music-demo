@@ -1,0 +1,57 @@
+# .github/workflows/ci.yml
+
+name: Continuous Integration
+
+# Este workflow se activa en cada 'push' a la rama 'main'
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  # --- Primer trabajo: Probar el Smart Contract ---
+  test-contract:
+    name: Test Smart Contract
+    runs-on: ubuntu-latest # Usamos una máquina virtual de Ubuntu
+
+    steps:
+      # 1. Descarga el código del repositorio
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive # Necesario para que Foundry funcione bien
+
+      # 2. Instala Foundry
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      # 3. Navega a la carpeta del contrato y ejecuta las pruebas
+      - name: Run Forge tests
+        working-directory: ./mint-your-music-contract
+        run: forge test
+
+  # --- Segundo trabajo: Construir la Mini App (se ejecuta en paralelo al primero) ---
+  build-miniapp:
+    name: Build Mini App
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Descarga el código del repositorio
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      # 2. Configura Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20" # Usamos la misma versión de Node que en local
+
+      # 3. Navega a la carpeta de la miniapp, instala dependencias y construye
+      - name: Install and Build
+        working-directory: ./miniapp
+        run: |
+          npm install
+          npm run build
