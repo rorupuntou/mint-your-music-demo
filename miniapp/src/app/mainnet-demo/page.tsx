@@ -5,15 +5,13 @@ import { ethers } from "ethers";
 import { contractAddress, contractABI } from "../../../lib/contract_mainnet";
 import Head from "next/head";
 import { MiniKit, VerificationLevel } from "@worldcoin/minikit-js";
-import { translations } from "../../../lib/translations"; // Correct path from src/app/mainnet-demo
+import { translations } from "../../../lib/translations";
 
 type MiniKitError = { message?: string };
 
 export default function Home() {
-  // --- State Management ---
   const [lang, setLang] = useState<"en" | "es">("en");
   const t = translations[lang];
-
   const [isConnected, setIsConnected] = useState(false);
   const [isHuman, setIsHuman] = useState(false);
   const [price, setPrice] = useState("0.001");
@@ -26,7 +24,6 @@ export default function Home() {
     MiniKit.install();
   }, []);
 
-  // --- Core Logic Functions (Your working code) ---
   const handleConnect = async () => {
     setIsLoading(true);
     setFeedback(t.connecting);
@@ -130,42 +127,60 @@ export default function Home() {
     }
   };
 
-  // --- UI Rendering ---
   return (
     <>
       <Head>
         <title>Mint your Music</title>
       </Head>
-      <main className="flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 bg-black text-white font-sans">
+      <div className="fixed inset-0 z-[-1]">
+        <img
+          src="/showcase-bg.png"
+          alt="Abstract background"
+          className="object-cover w-full h-full blur-sm brightness-50"
+        />
+      </div>
+      <main className="flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 font-sans text-white">
         <div className="absolute top-4 right-4 z-10">
           <button
             onClick={() => setLang(lang === "en" ? "es" : "en")}
-            className="px-3 py-1 text-sm text-gray-400 bg-gray-800 rounded-full hover:bg-gray-700 transition-colors"
+            className="px-3 py-1 text-sm text-gray-300 bg-black bg-opacity-20 backdrop-blur-md border border-white/10 rounded-full hover:bg-opacity-30 transition-colors"
           >
             {t.lang_switcher}
           </button>
         </div>
-        <div className="w-full max-w-sm p-6 bg-gray-900 rounded-2xl shadow-lg border border-gray-700 space-y-6">
+        <div className="w-full max-w-sm p-6 bg-black bg-opacity-20 backdrop-blur-lg rounded-2xl shadow-lg border border-white/10 space-y-6">
           {!isConnected ? (
             <div className="text-center space-y-4">
-              <h1 className="text-2xl font-bold">{t.welcome}</h1>
-              <p className="text-gray-400">{t.connect_wallet_prompt}</p>
+              <img
+                src="/logo.png"
+                alt="Mint Your Music Logo"
+                className="w-24 h-24 mx-auto"
+              />
+              <h1 className="text-2xl font-bold text-white">{t.welcome}</h1>
+              <p className="text-gray-300">{t.connect_wallet_prompt}</p>
               <button
                 onClick={handleConnect}
                 disabled={isLoading}
-                className="w-full py-3 mt-4 font-bold text-white uppercase tracking-wider bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500 rounded-lg shadow-lg border-2 border-yellow-400 hover:from-yellow-500 hover:via-red-600 hover:to-pink-600 transition-all transform active:scale-95 disabled:bg-gray-600 disabled:cursor-not-allowed"
+                className="w-full py-3 mt-4 font-bold text-white uppercase tracking-wider bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg hover:shadow-[0_0_15px_rgba(79,70,229,0.8)] transition-all transform active:scale-95 disabled:from-gray-600 disabled:to-gray-700 disabled:shadow-none disabled:cursor-not-allowed"
               >
                 {isLoading ? t.connecting : t.connect_wallet_button}
               </button>
             </div>
           ) : !isHuman ? (
             <div className="text-center space-y-4">
-              <h1 className="text-2xl font-bold">{t.verify_humanity}</h1>
-              <p className="text-gray-400">{t.verify_prompt}</p>
+              <img
+                src="/logo.png"
+                alt="Mint Your Music Logo"
+                className="w-24 h-24 mx-auto"
+              />
+              <h1 className="text-2xl font-bold text-white">
+                {t.verify_humanity}
+              </h1>
+              <p className="text-gray-300">{t.verify_prompt}</p>
               <button
                 onClick={handleVerify}
                 disabled={isLoading}
-                className="w-full py-3 mt-4 font-bold text-white uppercase tracking-wider bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 rounded-lg shadow-lg border-2 border-green-400 hover:from-green-500 hover:via-blue-600 hover:to-purple-600 transition-all transform active:scale-95 disabled:bg-gray-600"
+                className="w-full py-3 mt-4 font-bold text-white uppercase tracking-wider bg-gradient-to-r from-purple-500 to-pink-600 rounded-lg hover:shadow-[0_0_15px_rgba(192,38,211,0.8)] transition-all transform active:scale-95 disabled:from-gray-600 disabled:to-gray-700 disabled:shadow-none"
               >
                 {isLoading ? t.verifying : t.verify_button}
               </button>
@@ -178,10 +193,10 @@ export default function Home() {
                 className="w-full h-auto rounded-lg shadow-md"
               />
               <div className="text-center">
-                <h1 className="text-2xl font-bold">
+                <h1 className="text-2xl font-bold text-white">
                   {purchaseSuccess ? t.thank_you : t.album_title}
                 </h1>
-                <p className="text-gray-400">{t.artist_name}</p>
+                <p className="text-gray-300">{t.artist_name}</p>
               </div>
               <audio controls className="w-full rounded-lg">
                 <source
@@ -190,7 +205,7 @@ export default function Home() {
                 />
               </audio>
               {!purchaseSuccess ? (
-                <div>
+                <>
                   <div>
                     <label
                       htmlFor="price"
@@ -203,7 +218,7 @@ export default function Home() {
                       id="price"
                       value={price}
                       onChange={(e) => setPrice(e.target.value)}
-                      className="w-full px-3 py-2 text-white bg-gray-800 border border-gray-600 rounded-lg"
+                      className="w-full px-3 py-2 text-white bg-gray-800 border border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none"
                       step="0.001"
                       min="0.001"
                     />
@@ -231,11 +246,11 @@ export default function Home() {
                   <button
                     onClick={handlePurchase}
                     disabled={isLoading}
-                    className="w-full py-3 mt-4 font-bold text-white uppercase tracking-wider bg-gradient-to-r from-orange-400 via-pink-500 to-red-500 rounded-lg shadow-lg border-2 border-orange-400 hover:from-orange-500 hover:via-pink-600 hover:to-red-600 transition-all transform active:scale-95 disabled:bg-gray-600"
+                    className="w-full py-3 mt-4 font-bold text-white uppercase tracking-wider bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg hover:shadow-[0_0_15px_rgba(79,70,229,0.8)] transition-all transform active:scale-95 disabled:from-gray-600 disabled:to-gray-700 disabled:shadow-none"
                   >
                     {isLoading ? t.purchasing : t.purchase_button}
                   </button>
-                </div>
+                </>
               ) : (
                 <p className="mt-8 text-lg font-bold text-center text-green-400">
                   {t.thank_you}
