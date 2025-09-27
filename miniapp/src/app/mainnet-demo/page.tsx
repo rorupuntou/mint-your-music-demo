@@ -143,7 +143,7 @@ export default function Home() {
         <div className="absolute top-4 right-4 z-10">
           <button
             onClick={() => setLang(lang === "en" ? "es" : "en")}
-            className="px-3 py-1 text-sm text-gray-300 bg-black bg-opacity-20 backdrop-blur-md border border-white/10 rounded-full hover:bg-opacity-30 transition-colors"
+            className="px-3 py-1 text-sm font-bold text-white bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500 border-2 border-yellow-400 rounded-full shadow-lg hover:from-yellow-500 hover:via-red-600 hover:to-pink-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-all"
           >
             {t.lang_switcher}
           </button>
@@ -161,7 +161,7 @@ export default function Home() {
               <button
                 onClick={handleConnect}
                 disabled={isLoading}
-                className="w-full py-3 mt-4 font-bold text-white uppercase tracking-wider bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg hover:shadow-[0_0_15px_rgba(79,70,229,0.8)] transition-all transform active:scale-95 disabled:from-gray-600 disabled:to-gray-700 disabled:shadow-none disabled:cursor-not-allowed"
+                className="w-full py-3 mt-4 font-bold text-white uppercase tracking-wider bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 border-2 border-cyan-400 rounded-lg shadow-lg hover:from-cyan-500 hover:via-blue-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all active:scale-95 disabled:bg-gray-600 disabled:cursor-not-allowed"
               >
                 {isLoading ? t.connecting : t.connect_wallet_button}
               </button>
@@ -180,7 +180,7 @@ export default function Home() {
               <button
                 onClick={handleVerify}
                 disabled={isLoading}
-                className="w-full py-3 mt-4 font-bold text-white uppercase tracking-wider bg-gradient-to-r from-purple-500 to-pink-600 rounded-lg hover:shadow-[0_0_15px_rgba(192,38,211,0.8)] transition-all transform active:scale-95 disabled:from-gray-600 disabled:to-gray-700 disabled:shadow-none"
+                className="w-full py-3 mt-4 font-bold text-white uppercase tracking-wider bg-gradient-to-r from-green-400 via-teal-500 to-blue-500 border-2 border-green-400 rounded-lg shadow-lg hover:from-green-500 hover:via-teal-600 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-green-400 transition-all active:scale-95 disabled:bg-gray-600"
               >
                 {isLoading ? t.verifying : t.verify_button}
               </button>
@@ -218,7 +218,7 @@ export default function Home() {
                       id="price"
                       value={price}
                       onChange={(e) => setPrice(e.target.value)}
-                      className="w-full px-3 py-2 text-white bg-gray-800 border border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none"
+                      className="w-full px-3 py-2 text-white bg-gray-800 border-2 border-orange-400 rounded-lg focus:ring-2 focus:ring-orange-400 outline-none"
                       step="0.001"
                       min="0.001"
                     />
@@ -240,13 +240,13 @@ export default function Home() {
                       onChange={(e) =>
                         setArtistPercentage(Number(e.target.value))
                       }
-                      className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+                      className="w-full h-2 bg-gray-700 border-2 border-pink-400 rounded-lg appearance-none cursor-pointer focus:ring-2 focus:ring-pink-400"
                     />
                   </div>
                   <button
                     onClick={handlePurchase}
                     disabled={isLoading}
-                    className="w-full py-3 mt-4 font-bold text-white uppercase tracking-wider bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg hover:shadow-[0_0_15px_rgba(79,70,229,0.8)] transition-all transform active:scale-95 disabled:from-gray-600 disabled:to-gray-700 disabled:shadow-none"
+                    className="w-full py-3 mt-4 font-bold text-white uppercase tracking-wider bg-gradient-to-r from-orange-400 via-pink-500 to-red-500 border-2 border-orange-400 rounded-lg shadow-lg hover:from-orange-500 hover:via-pink-600 hover:to-red-600 focus:outline-none focus:ring-2 focus:ring-orange-400 transition-all active:scale-95 disabled:bg-gray-600"
                   >
                     {isLoading ? t.purchasing : t.purchase_button}
                   </button>
